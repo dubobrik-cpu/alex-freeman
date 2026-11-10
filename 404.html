@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Страница не найдена</title>
+<script>
+  (function () {
+    var p = location.pathname, low = p.toLowerCase();
+    if (low !== p && location.search.indexOf("lc=1") === -1) {
+      location.replace(low + (location.search ? location.search + "&lc=1" : "?lc=1") + location.hash);
+    }
+  })();
+</script>
+<style>
+  body { margin:0; background:#F2EFE8; color:#141414; font:17px/1.55 system-ui, sans-serif; }
+  .wrap { max-width:560px; margin:0 auto; padding:48px 16px; }
+  h1 { font-size:24px; margin:0 0 12px; }
+  code { display:block; background:#fff; border:1px solid #D9D4C9; padding:10px 12px; border-radius:8px; word-break:break-all; margin:8px 0 24px; font-size:15px; }
+  a.btn { display:block; padding:16px 18px; background:#141414; color:#F2EFE8; text-decoration:none; border-radius:10px; margin-bottom:10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Такой страницы нет</h1>
+  <p>Открылся адрес:</p>
+  <code id="u"></code>
+  <a class="btn" href="/alex-freeman/player/">Alex Freeman: плеер →</a>
+  <a class="btn" href="/">Все проекты →</a>
+</div>
+<script>document.getElementById("u").textContent = location.href;</script>
+</body>
+</html>
