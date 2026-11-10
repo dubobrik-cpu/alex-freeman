@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D-логотип: два варианта</title>
+<style>
+  :root { --bg:#F2EFE8; --ink:#141414; --mute:#6B675F; --line:#D9D4C9; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 system-ui, sans-serif; }
+  .wrap { max-width:960px; margin:0 auto; padding:32px 16px 64px; }
+  .note { font-size:13px; color:var(--mute); border:1px dashed var(--line); padding:10px 14px; border-radius:8px; margin-bottom:28px; }
+  h2 { font-size:20px; margin:0 0 4px; }
+  .lbl { display:inline-block; font-size:12px; background:var(--ink); color:var(--bg); padding:2px 8px; border-radius:4px; margin-right:8px; vertical-align:2px; }
+  p.d { margin:0 0 14px; color:var(--mute); font-size:14px; }
+  .stage { width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; margin-bottom:40px; background:#0d0d0d; }
+  .stage.light { background:var(--bg); border:1px solid var(--line); }
+  model-viewer { width:100%; height:100%; --poster-color:transparent; }
+  video { width:100%; height:100%; display:block; object-fit:cover; }
+</style>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="note">Демо для выбора. Модель - 3D-логотип, сделанный Викторией в Blender, сжатый для сайта. Фон и подписи временные</div>
+
+  <h2><span class="lbl">А</span>Живая 3D-модель</h2>
+  <p class="d">Крутится сама, можно повернуть пальцем или мышкой. Модель 0,85 МБ</p>
+  <div class="stage">
+    <model-viewer src="af.glb" alt="Логотип Alex Freeman" loading="lazy" reveal="auto"
+      auto-rotate auto-rotate-delay="0" rotation-per-second="40deg" camera-controls disable-zoom
+      interaction-prompt="none" field-of-view="17deg" exposure="1.1" shadow-intensity="0" camera-orbit="0deg 82deg 5.4m" min-camera-orbit="auto auto 5.4m" max-camera-orbit="auto auto 5.4m"></model-viewer>
+  </div>
+
+  <h2><span class="lbl">А</span>Та же модель на светлом фоне</h2>
+  <p class="d">Например, для внутренних страниц</p>
+  <div class="stage light">
+    <model-viewer src="af.glb" alt="Логотип Alex Freeman" loading="lazy" reveal="auto"
+      auto-rotate auto-rotate-delay="0" rotation-per-second="40deg" camera-controls disable-zoom
+      interaction-prompt="none" field-of-view="17deg" exposure="1.0" shadow-intensity="0" camera-orbit="0deg 82deg 5.4m" min-camera-orbit="auto auto 5.4m" max-camera-orbit="auto auto 5.4m"></model-viewer>
+  </div>
+
+  <h2><span class="lbl">Б</span>Видео из рендера Blender</h2>
+  <p class="d">Готовая анимация 360°, крутится по кругу. Только на тёмном фоне, повернуть нельзя. Видео 1,2 МБ</p>
+  <div class="stage">
+    <video src="af-spin.mp4" poster="af-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+  </div>
+</div>
+</body>
+</html>
