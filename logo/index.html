@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Логотип в объёме: демо</title>
+<style>
+  :root { --bg:#F2EFE8; --ink:#141414; --mute:#6B675F; --line:#D9D4C9; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 system-ui, sans-serif; }
+  .wrap { max-width:960px; margin:0 auto; padding:32px 16px 64px; }
+  .note { font-size:13px; color:var(--mute); border:1px dashed var(--line); padding:10px 14px; border-radius:8px; margin-bottom:28px; }
+  h2 { font-size:20px; margin:0 0 4px; }
+  p.d { margin:0 0 14px; color:var(--mute); font-size:14px; }
+  .stage { perspective:1100px; display:flex; align-items:center; justify-content:center; height:min(62vw,440px); border-radius:16px; margin-bottom:40px; overflow:hidden; }
+  .stage.dark { background:#0d0d0d; }
+  .stage.light { background:var(--bg); border:1px solid var(--line); }
+  .logo { position:relative; width:min(78vw,560px); aspect-ratio:900/620; transform-style:preserve-3d; animation:sway 7s ease-in-out infinite; }
+  .logo img { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  /* слои за логотипом дают толщину; лицевой слой - исходный файл без изменений */
+  .logo img.depth { opacity:.9; }
+  @keyframes sway {
+    0%,100% { transform:rotateY(-28deg) rotateX(6deg); }
+    50%     { transform:rotateY(28deg)  rotateX(-4deg); }
+  }
+  @media (prefers-reduced-motion: reduce) { .logo { animation:none; transform:rotateY(-12deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="note">Демо для обсуждения. Логотип не перерисован: спереди исходная картинка, объём даёт её затемнённая копия позади. Фон и подписи временные</div>
+
+  <h2>На тёмном блоке</h2>
+  <p class="d">Например, первый экран сайта</p>
+  <div class="stage dark"><div class="logo" data-logo></div></div>
+
+  <h2>На светлом фоне</h2>
+  <p class="d">Например, шапка внутренних страниц</p>
+  <div class="stage light"><div class="logo" data-logo></div></div>
+</div>
+<script>
+  // 12 слоёв глубины + лицевой слой
+  document.querySelectorAll("[data-logo]").forEach(function (box) {
+    var depth = 12, step = 1.6;
+    for (var i = depth; i >= 1; i--) {
+      var d = document.createElement("img");
+      d.src = "af-depth.webp"; d.alt = ""; d.className = "depth"; d.decoding = "async";
+      d.style.transform = "translateZ(" + (-i * step) + "px)";
+      box.appendChild(d);
+    }
+    var f = document.createElement("img");
+    f.src = "af.webp"; f.alt = "Alex Freeman"; f.decoding = "async";
+    box.appendChild(f);
+  });
+</script>
+</body>
+</html>
