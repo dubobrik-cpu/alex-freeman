@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D-логотип, новая версия</title>
+<style>
+  :root { --bg:#0E0F0C; --ink:#F2F2EE; --mute:#9A9C93; --line:#2A2C26; --acid:#94F800; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 system-ui, sans-serif; }
+  .wrap { max-width:960px; margin:0 auto; padding:32px 16px 64px; }
+  .note { font-size:13px; color:var(--mute); border:1px dashed var(--line); padding:10px 14px; border-radius:8px; margin-bottom:28px; }
+  h2 { font-size:20px; margin:0 0 4px; }
+  p.d { margin:0 0 14px; color:var(--mute); font-size:14px; }
+  .stage { width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; margin-bottom:40px; background:#050505; }
+  .stage.grey { background:#3a3b37; }
+  model-viewer { width:100%; height:100%; --poster-color:transparent; }
+</style>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="note">Демо для выбора. Новая 3D-модель логотипа: объём с двух сторон, цвет взят из исходного логотипа. Фон и подписи временные</div>
+
+  <h2>Крутится сама</h2>
+  <p class="d">Можно повернуть пальцем или мышкой. Модель 0,45 МБ</p>
+  <div class="stage">
+    <model-viewer src="af.glb" alt="Логотип Alex Freeman" loading="eager" reveal="auto"
+      auto-rotate auto-rotate-delay="0" rotation-per-second="35deg" camera-controls disable-zoom
+      interaction-prompt="none" tone-mapping="neutral" exposure="0.55" shadow-intensity="0"
+      camera-orbit="0deg 85deg auto" field-of-view="17deg"></model-viewer>
+  </div>
+
+  <h2>Та же модель на сером</h2>
+  <p class="d">Чтобы было видно чёрную обводку и торцы</p>
+  <div class="stage grey">
+    <model-viewer src="af.glb" alt="Логотип Alex Freeman" loading="eager" reveal="auto"
+      auto-rotate auto-rotate-delay="0" rotation-per-second="35deg" camera-controls disable-zoom
+      interaction-prompt="none" tone-mapping="neutral" exposure="0.55" shadow-intensity="0"
+      camera-orbit="35deg 75deg auto" field-of-view="17deg"></model-viewer>
+  </div>
+</div>
+</body>
+</html>
