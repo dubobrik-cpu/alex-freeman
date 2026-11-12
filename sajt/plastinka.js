@@ -1,57 +1,67 @@
-// Пластинка со скретчем (демо 11.11). Этикетка из рисунка Лёши крутится рукой,
-// звук идёт вперёд и назад со скоростью руки. Звук ВРЕМЕННЫЙ: синтез кодом, без чужой музыки.
-// Когда Лёша пришлёт свой сэмпл, заменить makeBuffer() на загрузку файла.
+// Пластинка со скретчем (демо). Диск и этикетка восстановлены из рисунка Лёши (assets/plastinka.webp,
+// assets/etiketka.webp). Этикетка крутится рукой, звук идёт вперёд и назад со скоростью руки.
+// Звук ВРЕМЕННЫЙ: синтез кодом, без чужой музыки. Сэмпл Лёши подставить в makeBuffer().
 (function () {
   var hero = document.querySelector('.hero'), bgImg = document.querySelector('.hero__bg img');
   if (!hero || !bgImg) return;
-  // этикетка на фоне: центр и полуоси в пикселях исходника 1672x941
-  var CX = 10, CY = 930, RX = 101, RY = 59, DISC_RX = 270, DISC_RY = 138;
+  // на рисунке 1672x941: центр пластинки и полуоси диска и этикетки
+  var CX = 10, CY = 930, DRX = 262, DRY = 136, LRX = 101, LRY = 59;
 
-  // этикетка лежит в слое фона (под затемнением), ловушка руки и подсказка поверх
-  var box = document.createElement('div'); box.className = 'vinyl';
-  box.innerHTML = '<div class="vinyl__flat"><img class="vinyl__lab" src="assets/etiketka.webp" alt="" draggable="false"></div>';
-  hero.querySelector('.hero__bg').appendChild(box);
-  var top = document.createElement('div'); top.className = 'vinyl vinyl--top';
-  top.innerHTML = '<button class="vinyl__hit" type="button" aria-label="Пластинка: потяните по кругу, чтобы поскретчить. Стрелки влево и вправо тоже работают"></button><span class="vinyl__hint" aria-hidden="true">крути</span>';
+  var top = document.createElement('div'); top.className = 'vinyl';
+  top.innerHTML =
+    '<div class="vinyl__disk"><img src="assets/plastinka.webp" alt="" draggable="false"></div>' +
+    '<div class="vinyl__flat"><img class="vinyl__lab" src="assets/etiketka.webp" alt="" draggable="false"></div>' +
+    '<button class="vinyl__hit" type="button" aria-label="Пластинка: потяните по кругу, чтобы поскретчить. Стрелки влево и вправо тоже работают"></button>' +
+    '<span class="vinyl__hint" aria-hidden="true">крути пластинку</span>';
   hero.appendChild(top);
-  var flat = box.querySelector('.vinyl__flat'), lab = box.querySelector('.vinyl__lab'), hit = top.querySelector('.vinyl__hit');
+  var disk = top.querySelector('.vinyl__disk'), flat = top.querySelector('.vinyl__flat'),
+      lab = top.querySelector('.vinyl__lab'), hit = top.querySelector('.vinyl__hit'), hint = top.querySelector('.vinyl__hint');
+  var C = { x: 0, y: 0, k: LRX / LRY };
 
-  // пересчёт положения: картинка фона с object-fit:cover и своим object-position
-  var sc = 1, ox = 0, oy = 0, on = false;
-  function place() {
-    var r = bgImg.getBoundingClientRect(), hr = hero.getBoundingClientRect();
-    var nw = 1672, nh = 941, cs = getComputedStyle(bgImg).objectPosition.split(' ');
-    var px = parseFloat(cs[0]) / 100, py = parseFloat(cs[1] || '50%') / 100;
-    sc = Math.max(r.width / nw, r.height / nh);
-    ox = r.left - hr.left + (r.width - nw * sc) * px; oy = r.top - hr.top + (r.height - nh * sc) * py;
-    var x = ox + CX * sc, y = oy + CY * sc;
-    on = window.innerWidth >= 1100 && x > -20 && y < hr.height + 40;
-    box.style.display = top.style.display = on ? '' : 'none';
-    var w = 2 * RX * sc;
-    flat.style.cssText = 'left:' + (x - w / 2) + 'px;top:' + (y - w / 2) + 'px;width:' + w + 'px;height:' + w + 'px;transform:scaleY(' + (RY / RX) + ')';
-    var hw = 2 * DISC_RX * sc, hh = 2 * DISC_RY * sc;
+  function put(x, y, sc) {
+    var dw = 2 * DRX * sc, lw = 2 * LRX * sc;
+    disk.style.cssText = 'left:' + (x - dw / 2) + 'px;top:' + (y - dw / 2) + 'px;width:' + dw + 'px;height:' + dw + 'px;transform:scaleY(' + (DRY / DRX) + ')';
+    flat.style.cssText = 'left:' + (x - lw / 2) + 'px;top:' + (y - lw / 2) + 'px;width:' + lw + 'px;height:' + lw + 'px;transform:scaleY(' + (LRY / LRX) + ')';
+    var hw = 2 * DRX * sc, hh = 2 * DRY * sc;
     hit.style.cssText = 'left:' + (x - hw / 2) + 'px;top:' + (y - hh / 2) + 'px;width:' + hw + 'px;height:' + hh + 'px';
-    top.querySelector('.vinyl__hint').style.cssText = 'left:' + (x + DISC_RX * sc * 0.55) + 'px;top:' + (y - DISC_RY * sc * 0.95) + 'px';
-    box._c = { x: x, y: y, k: RX / RY };
+    C.x = x; C.y = y;
+  }
+  function place() {
+    var hr = hero.getBoundingClientRect();
+    if (window.innerWidth >= 1100) {
+      // на компьютере: ровно на своём месте рисунка (object-fit: cover)
+      var r = bgImg.getBoundingClientRect(), cs = getComputedStyle(bgImg).objectPosition.split(' ');
+      var px = parseFloat(cs[0]) / 100, py = parseFloat(cs[1] || '50%') / 100;
+      var sc = Math.max(r.width / 1672, r.height / 941);
+      var ox = r.left - hr.left + (r.width - 1672 * sc) * px, oy = r.top - hr.top + (r.height - 941 * sc) * py;
+      put(ox + CX * sc, oy + CY * sc, sc);
+      hint.style.cssText = 'left:' + (C.x + DRX * sc * 0.08) + 'px;top:' + (C.y - DRY * sc * 1.3) + 'px';
+      hint.textContent = 'крути пластинку'; top.classList.remove('vinyl--mob');
+    } else {
+      // телефон и планшет: выглядывает справа от кнопки «Слушать миксы»
+      var b = document.querySelector('.listen').getBoundingClientRect(), s2 = 104 / DRX;
+      put(hr.width + 6, b.top - hr.top + b.height / 2, s2);
+      hint.textContent = 'крути'; hint.style.cssText = 'right:10px;top:' + (b.top - hr.top + b.height / 2 - DRY * s2 - 30) + 'px';
+      top.classList.add('vinyl--mob');
+    }
   }
   if (bgImg.complete) place(); else bgImg.addEventListener('load', place);
   window.addEventListener('resize', place);
+  if (document.fonts) document.fonts.ready.then(place);
 
   // звук
-  var ctx, buf, node, pos = 0, rate = 0, target = 0, gain;
+  var ctx, data, len, rate = 0, target = 0, pos = 0;
   function makeBuffer() {
     var sr = ctx.sampleRate, n = Math.floor(sr * 2.4), b = ctx.createBuffer(1, n, sr), d = b.getChannelData(0), i, t;
-    // «а-а»: пила 140 Гц через форманты гласной «а» (700 и 1220 Гц), с падением высоты
+    // «а-а»: пила с падением высоты через форманты гласной «а»
     for (i = 0; i < sr * 0.9; i++) {
-      t = i / sr; var f0 = 150 - 30 * t, ph = 0, s = 0, h;
+      t = i / sr; var f0 = 150 - 30 * t, s = 0, h;
       for (h = 1; h < 28; h++) {
         var fh = f0 * h, fA = Math.exp(-Math.pow((fh - 700) / 160, 2)) + 0.6 * Math.exp(-Math.pow((fh - 1220) / 200, 2)) + 0.25 * Math.exp(-Math.pow((fh - 2600) / 300, 2));
         s += fA / h * Math.sin(2 * Math.PI * fh * t);
       }
-      var env = Math.min(1, t / 0.02) * Math.max(0, 1 - Math.pow(t / 0.9, 3));
-      d[i] = s * 0.9 * env;
+      d[i] = s * 0.9 * Math.min(1, t / 0.02) * Math.max(0, 1 - Math.pow(t / 0.9, 3));
     }
-    // бочка и хлопок
     function kick(at) { for (var j = 0; j < sr * 0.35; j++) { var tt = j / sr; d[Math.floor(at * sr) + j] += Math.sin(2 * Math.PI * (50 + 120 * Math.exp(-tt * 30)) * tt) * Math.exp(-tt * 9) * 0.9; } }
     function clap(at) { for (var j = 0; j < sr * 0.25; j++) { var tt = j / sr; d[Math.floor(at * sr) + j] += (Math.random() * 2 - 1) * Math.exp(-tt * 18) * 0.45; } }
     kick(1.0); clap(1.4); kick(1.8); clap(2.1);
@@ -61,10 +71,10 @@
   function audioOn() {
     if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
     var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-    ctx = new AC(); buf = makeBuffer(); var data = buf.getChannelData(0), len = data.length;
-    gain = ctx.createGain(); gain.gain.value = 0.8;
+    ctx = new AC(); data = makeBuffer().getChannelData(0); len = data.length;
+    var gain = ctx.createGain(); gain.gain.value = 0.8;
     var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 6000;
-    node = ctx.createScriptProcessor(1024, 0, 1);
+    var node = ctx.createScriptProcessor(1024, 0, 1);
     node.onaudioprocess = function (e) {
       var out = e.outputBuffer.getChannelData(0);
       for (var k = 0; k < out.length; k++) {
@@ -79,12 +89,12 @@
 
   // рука: угол вокруг центра этикетки в «развёрнутых» координатах
   var angle = 0, dragging = false, last = 0, lastT = 0, stopTimer;
-  function ang(e) { var c = box._c, r = hero.getBoundingClientRect(); return Math.atan2((e.clientY - r.top - c.y) * c.k, e.clientX - r.left - c.x) * 180 / Math.PI; }
+  function ang(e) { var r = hero.getBoundingClientRect(); return Math.atan2((e.clientY - r.top - C.y) * C.k, e.clientX - r.left - C.x) * 180 / Math.PI; }
   function turn(delta, dt) {
     angle += delta; lab.style.transform = 'rotate(' + angle + 'deg)';
-    var w = delta / Math.max(dt, 0.008); // градусов в секунду
-    target = Math.max(-4, Math.min(4, w / 200)); // 33 об/мин = 200 °/с = скорость 1
+    target = Math.max(-4, Math.min(4, delta / Math.max(dt, 0.008) / 200)); // 33 об/мин = 200 °/с = скорость 1
     clearTimeout(stopTimer); stopTimer = setTimeout(function () { target = 0; }, 60);
+    top.classList.add('is-used');
   }
   hit.addEventListener('pointerdown', function (e) {
     audioOn(); dragging = true; hit.setPointerCapture(e.pointerId); last = ang(e); lastT = performance.now(); top.classList.add('is-hand');

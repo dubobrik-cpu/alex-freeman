@@ -360,16 +360,17 @@ html{scroll-padding-top:96px;scroll-padding-bottom:24px}
 .af3d model-viewer{left:-17%;right:-17%;top:-37%;bottom:-37%}
 
 /* пластинка со скретчем (демо) */
-.vinyl{position:absolute;inset:0;pointer-events:none}
-.vinyl--top{z-index:1}
-.vinyl__flat{position:absolute;transform-origin:50% 50%}
-.vinyl__lab{display:block;width:100%;height:100%;user-select:none}
+.vinyl{position:absolute;inset:0;pointer-events:none;z-index:1}
+.vinyl__disk,.vinyl__flat{position:absolute;transform-origin:50% 50%}
+.vinyl__disk img,.vinyl__lab{display:block;width:100%;height:100%;user-select:none}
+.vinyl__disk{filter:brightness(.92);opacity:.97}
 .vinyl__hit{position:absolute;border:0;padding:0;background:none;border-radius:50%;pointer-events:auto;cursor:grab;touch-action:none}
-.vinyl--top.is-hand .vinyl__hit{cursor:grabbing}
+.vinyl.is-hand .vinyl__hit{cursor:grabbing}
 .vinyl__hit:focus-visible{outline:2px solid var(--focus);outline-offset:-6px}
-.vinyl__hint{position:absolute;font:500 .8125rem/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:var(--on-acid);background:var(--acid);padding:5px 8px;border-radius:6px;transform:rotate(-6deg);opacity:0;transition:opacity .3s var(--ease-out)}
-.vinyl--top:hover .vinyl__hint,.vinyl__hit:focus-visible+.vinyl__hint{opacity:1}
-.vinyl--top.is-hand .vinyl__hint{opacity:0}
+.vinyl__hint{position:absolute;white-space:nowrap;font:500 .8125rem/1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:var(--on-acid);background:var(--acid);padding:6px 9px;border-radius:6px;transform:rotate(-6deg);box-shadow:0 4px 14px rgba(0,0,0,.5);animation:hint-in .6s var(--ease-out) 1.2s both;transition:opacity .3s var(--ease-out)}
+.vinyl.is-used .vinyl__hint{opacity:0}
+@keyframes hint-in{from{opacity:0;transform:rotate(-6deg) translateY(8px)}to{opacity:1;transform:rotate(-6deg)}}
+@media (prefers-reduced-motion:reduce){.vinyl__hint{animation:none}}
 
 /* страницы разделов (12.11) */
 .mazok{display:block;width:min(260px,60%);height:auto;margin:-6px 0 var(--s4) -6px}
@@ -394,3 +395,7 @@ html{scroll-padding-top:96px;scroll-padding-bottom:24px}
 .soon>.wrap,.soon--top>.wrap{width:100%}
 .razdel__efir .card{min-height:0}
 @media (min-width:1100px){.soon>.wrap{max-width:calc(980px + 2*var(--gutter))}}
+.foot__by{color:var(--text-2)}
+.af3d model-viewer{pointer-events:auto;cursor:grab}
+.af3d model-viewer:active{cursor:grabbing}
+.tiles{position:relative;z-index:2}

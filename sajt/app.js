@@ -127,6 +127,16 @@
         mv.setAttribute('tone-mapping', 'neutral'); mv.setAttribute('exposure', '0.55'); mv.setAttribute('shadow-intensity', '0');
         mv.setAttribute('camera-orbit', '0deg 85deg auto'); mv.setAttribute('field-of-view', '17deg');
         mv.setAttribute('loading', 'eager'); mv.setAttribute('reveal', 'auto'); mv.setAttribute('aria-hidden', 'true'); mv.tabIndex = -1;
+        // рукой: тянуть = вращать (мышь и палец), наведение = раскрутка быстрее
+        mv.setAttribute('camera-controls', ''); mv.setAttribute('disable-zoom', ''); mv.setAttribute('disable-pan', '');
+        mv.setAttribute('touch-action', 'pan-y'); mv.setAttribute('auto-rotate-delay', '1200');
+        mv.addEventListener('pointerenter', function () { mv.setAttribute('rotation-per-second', '140deg'); });
+        mv.addEventListener('pointerleave', function () { mv.setAttribute('rotation-per-second', '35deg'); });
+        // логотип-ссылка: клик ведёт по ссылке, а поворот рукой не ведёт
+        var sx = 0, sy = 0, moved = false;
+        mv.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; moved = false; });
+        mv.addEventListener('pointermove', function (e) { if (e.buttons && Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 6) moved = true; });
+        mv.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); } });
         mv.addEventListener('load', function () { box.classList.add('is-3d'); });
         box.appendChild(mv);
       });
