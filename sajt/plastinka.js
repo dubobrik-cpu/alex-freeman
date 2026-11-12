@@ -34,7 +34,9 @@
       var px = parseFloat(cs[0]) / 100, py = parseFloat(cs[1] || '50%') / 100;
       var sc = Math.max(r.width / 1672, r.height / 941);
       var ox = r.left - hr.left + (r.width - 1672 * sc) * px, oy = r.top - hr.top + (r.height - 941 * sc) * py;
-      put(ox + CX * sc, oy + CY * sc, sc);
+      // низкий экран: центр уходит за нижний край, поднимаем, чтобы диск был виден минимум на две трети
+      var yy = Math.min(oy + CY * sc, hr.height - DRY * sc * 0.4);
+      put(Math.max(ox + CX * sc, DRX * sc * 0.18), yy, sc);
       hint.style.cssText = 'left:' + (C.x + DRX * sc * 0.08) + 'px;top:' + (C.y - DRY * sc * 1.3) + 'px';
       hint.textContent = 'крути пластинку'; top.classList.remove('vinyl--mob');
     } else {
