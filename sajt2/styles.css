@@ -406,8 +406,9 @@ html{scroll-padding-top:96px;scroll-padding-bottom:24px}
 .top.is-scrolled .top__logo img{width:67px}
 @media (min-width:1100px){.top__logo img{width:132px}}
 @media (min-width:1200px){.top.is-scrolled .top__logo img{width:101px}}
-/* телефон и планшет: знак у надписи убран, надпись с подчёркиванием левее и чуть ниже */
+/* знак у надписи на первом экране убран на всех экранах */
+.hero__af,.af3d:has(> .hero__af){display:none}
+/* телефон и планшет: надпись с подчёркиванием левее и чуть ниже */
 @media (max-width:1099px){
-  .hero__af,.af3d:has(> .hero__af){display:none}
   .hero__name{margin:14px 0 0 -8px}
 }

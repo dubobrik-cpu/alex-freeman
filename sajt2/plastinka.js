@@ -36,9 +36,17 @@
       var ox = r.left - hr.left + (r.width - 1672 * sc) * px, oy = r.top - hr.top + (r.height - 941 * sc) * py;
       // 13.11: диск НЕ поднимаем, стоит ровно на нарисованном месте и не наезжает на кассету
       // (на низком экране виден частично, на сверхшироком уходит за край вместе с кассетой)
-      put(Math.max(ox + CX * sc, DRX * sc * 0.18), oy + CY * sc, sc);
-      // подсказка на самом диске, ниже кассеты
-      hint.style.cssText = 'left:12px;top:' + (C.y - DRY * sc * 0.6) + 'px';
+      var ny = oy + CY * sc, seen = (hr.height - (ny - DRY * sc)) / (2 * DRY * sc);
+      if (seen >= 0.45) {
+        put(Math.max(ox + CX * sc, DRX * sc * 0.18), ny, sc);
+        // подсказка на самом диске, ниже кассеты
+        hint.style.cssText = 'left:12px;top:' + (C.y - DRY * sc * 0.6) + 'px';
+      } else {
+        // низкий экран (ноутбук): на своём месте диск почти весь за краем, а поднять = закрыть кассету.
+        // Ставим в правый нижний угол, там свободный асфальт
+        put(hr.width - DRX * sc * 0.3, hr.height - DRY * sc * 0.55, sc);
+        hint.style.cssText = 'right:12px;top:' + (C.y - DRY * sc * 1.05 - 30) + 'px';
+      }
       hint.textContent = 'крути пластинку'; top.classList.remove('vinyl--mob');
     } else {
       // телефон и планшет: выглядывает справа от кнопки «Слушать миксы»
