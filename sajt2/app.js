@@ -84,6 +84,23 @@
     });
   }
 
+  // архив «Наломали дров»: плеер выпуска грузится по нажатию, открыт только один (закрыть = остановить музыку)
+  document.querySelectorAll('.ep__row').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var was = b.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.ep__row[aria-expanded="true"]').forEach(function (o) {
+        o.setAttribute('aria-expanded', 'false');
+        var p = document.getElementById(o.getAttribute('aria-controls')); p.innerHTML = ''; p.hidden = true;
+      });
+      if (was) return;
+      var pl = document.getElementById(b.getAttribute('aria-controls'));
+      var f = document.createElement('iframe');
+      f.className = 'player'; f.src = b.dataset.src; f.title = 'Плеер: Наломали дров #' + b.dataset.n;
+      f.setAttribute('referrerpolicy', 'no-referrer'); f.setAttribute('allow', 'autoplay');
+      pl.appendChild(f); pl.hidden = false; b.setAttribute('aria-expanded', 'true');
+    });
+  });
+
   // листаешь страницу - магнитола сама сворачивается в полосу, музыка играет дальше
   window.addEventListener('scroll', function () {
     if (!mag || openedAt === null || mag.classList.contains('is-min')) return;
